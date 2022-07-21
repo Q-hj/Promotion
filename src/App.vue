@@ -1,7 +1,7 @@
 <!--
  * @Date: 2022-07-19 22:17:15
  * @LastEditors: Mr.qin
- * @LastEditTime: 2022-07-21 22:06:52
+ * @LastEditTime: 2022-07-21 23:27:30
  * @Description: 主页面
 -->
 
@@ -12,14 +12,14 @@
 		{
 			name: "tel",
 			label: "联系电话",
-			value: "133132313",
-			color: "c-yellow",
+			value: "15565169976",
+			color: "c-green",
 		},
 		{
 			name: "address",
 			label: "地址",
 			value: "小岭村南华东头",
-			color: "c-green",
+			color: "c-yellow",
 		},
 	]);
 	const touchDistance = ref(0);
@@ -29,8 +29,12 @@
 	const img = ref(null);
 	function onTouchEnd({ changedTouches }) {
 		const distance = touchDistance.value - changedTouches[0].clientX;
-		if (distance > 0) img.value.classList.add("animate__rollOut");
+		// if (distance > 0) img.value.classList.add("animate__rollOut");
 		console.log(distance);
+	}
+	function handleTOLink(item) {
+		// if (item.name === "tel") window.open("tel:" + item.value);
+		if (item.name === "tel") location.replace("tel:" + item.value);
 	}
 </script>
 
@@ -46,7 +50,7 @@
 			:src="baseUrl + item + '.jpg'"
 			alt=""
 		/>
-		<div class="link m-t-50">
+		<div class="link m-t-50 p-b-50">
 			<div
 				class="link-item lh-30 tac animate__zoomInDown"
 				v-for="item in formList"
@@ -54,7 +58,9 @@
 			>
 				<span class="m-r-10 fwb">{{ item.label }}:</span>
 
-				<span :class="item.color">{{ item.value }}</span>
+				<span @click="handleTOLink(item)" :class="item.color">{{
+					item.value
+				}}</span>
 			</div>
 		</div>
 	</div>
