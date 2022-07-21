@@ -1,0 +1,300 @@
+@colors: {
+    black: #000;
+    deep: #363a45;
+    gray: #666a75;
+    light: #b3b5b9;
+    stroke: #e8e9ed;
+    white: #ffffff;
+    yellow: #ffc312;
+    blue: #00a8ff;
+    green: #00b894;
+    green-d: #22a6b3;
+
+    success: #00B578;
+    warning: #FF6A2A;
+    error: #E63633;
+}
+
+@warp-margin: 16rem; //warp容器距离屏幕两侧的距离
+
+each(@colors, {
+
+    // 文字颜色
+    .c-@{key} {
+        color: @value;
+    }
+
+    // 背景颜色
+    .bc-@{key} {
+        background: @value;
+    }
+
+    // 边框颜色
+    .border-@{key} {
+        border: 1px solid @value;
+    }
+
+
+}) each(range(10, 80, 2), {
+
+    // 字体大小 
+    .fz-@{value} {
+        font-size: (@value / @rem);
+
+    }
+
+    // 行高
+    .lh-@{value} {
+        line-height: (@value / @rem);
+    }
+
+}) .trs {
+    transition: 0.5;
+}
+
+.min-h-100vh {
+    min-height: 100vh;
+}
+
+.h-100vh {
+    height: 100vh;
+}
+
+.fwb {
+    font-weight: bold;
+}
+
+.m-center {
+    margin: 0 auto;
+}
+
+.bs-b {
+    box-sizing: border-box;
+}
+
+.bs-c {
+    box-sizing: content-box;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-warp {
+    .flex;
+    flex-wrap: wrap;
+}
+
+.flex-col {
+    .flex;
+    flex-direction: column;
+}
+
+.flex-col-center {
+    .flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-ac {
+    .flex;
+    align-items: center;
+}
+
+.flex-sb {
+    .flex;
+    justify-content: space-between;
+}
+
+.flex-sb-ac {
+    .flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flex-center {
+    .flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.warp {
+    width: calc(100% - (@warp-margin * 2));
+    margin: 0 auto;
+}
+
+.fixed {
+    position: fixed;
+}
+
+.relative {
+    position: relative;
+}
+
+.abs {
+    position: absolute;
+}
+
+.tac {
+    text-align: center;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.w33p {
+    width: calc(100% / 3);
+}
+
+
+// --------------------------------------------
+.step-1(@i) when(@i<=50) {
+    .brs-@{i} {
+        border-radius: (@i / @rem);
+    }
+
+    .step-1(@i+1);
+}
+
+.step-1(0);
+
+
+// --------------规定类名缩写和对应的属性名-------------------
+
+// 宽高
+.size() {
+    w: width;
+    h: height;
+}
+
+// 边距
+.margin-type() {
+    m: margin;
+    p: padding;
+}
+
+// 方向
+.direction() {
+    l: left;
+    r: right;
+    t: top;
+    b: bottom;
+}
+
+/* 
+ * name:间隔 
+ * 作用： 生成-100到100之间间隔为5的数
+ * 结果示例: -100 -95 -90...95, 100
+ */
+@steps: range(-100, 100, 5);
+
+//  css单位无法直接拼接在属性值中，需设置变量，来进行运算得出
+@rem: 1rem;
+@pc: 1%;
+// 单位
+@unit: @rem @pc;
+
+// .unit() {
+// 	-: @rem;
+// 	-p: @pc;
+// }
+
+//  数字无法直接拼接在类名中，需设置变量
+@zero: 0;
+
+/* 
+* 生成代码示例：
+.w-80 {
+	width: 80rem;
+}
+.h50p {
+	width: 50%;
+}
+.m-5{
+	margin:5rem;
+} 
+.m-0-50 {
+	margin:0 50rem;
+}
+.m-50p-0 {
+	margin: 50% 0;
+}
+.p-r-15p {
+	margin-padding: 15%;
+}
+.t--100 {
+	top: -100rem;
+}
+*/
+
+//遍历间隔范围,值为： @value
+each(@steps, {
+
+    // 遍历宽高
+    each(.size(), .(@size-type, @size-name) {
+
+            .@{size-name}-@{value} {
+                @{size-type}: (@value / @rem);
+            }
+
+            .minFn(boolean(@value>=0));
+
+            // 大于0 执行生成 百分比宽度css
+            .minFn(@condition) when(@condition=true) {
+                .@{size-name}@{value}p {
+                    @{size-type}: (@value / @pc);
+                }
+            }
+        });
+
+    // 遍历边距类型
+    each(.margin-type(), .(@margin-type, @margin-name, @margin-index) {
+
+            .@{margin-name}-@{value} {
+                @{margin-type}: (@value / @rem);
+            }
+
+            .@{margin-name}-@{zero}-@{value} {
+                @{margin-type}: @zero (@value / @rem);
+            }
+
+            .@{margin-name}-@{value}-@{zero} {
+                @{margin-type}: (@value / @rem) @zero;
+            }
+
+            .@{margin-name}-@{value}p-@{zero} {
+                @{margin-type}: (@value / @pc) @zero;
+            }
+
+            .@{margin-name}-@{zero}-@{value}p {
+                @{margin-type}: @zero (@value / @pc);
+            }
+
+            // 遍历方向
+            each(.direction(), .(@direction, @direction-name) {
+                    .@{margin-name}-@{direction-name}-@{value} {
+                        @{margin-type}-@{direction}: (@value / @rem);
+                    }
+
+                    .@{margin-name}-@{direction-name}-@{value}p {
+                        @{margin-type}-@{direction}: (@value / @pc);
+                    }
+
+                    // 需要抽离，只执行一次
+                    .directionFn(@condition) when(@condition=true) {
+                        .@{direction-name}-@{value} {
+                            @{direction}: (@value / @rem);
+                        }
+                    }
+
+                    //  @margin-index >1 时调用
+                    .directionFn(boolean(@margin-index>1));
+                });
+
+
+        });
+
+
+});
